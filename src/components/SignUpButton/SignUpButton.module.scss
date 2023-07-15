@@ -1,0 +1,16 @@
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background-color: var(--green-color);
+  border: none;
+  border-radius: 5px;
+
+  font-family: "Rubik", sans-serif;
+  color: black;
+  font-weight: 500;
+  font-size: 19px;
+}
