@@ -1,28 +1,24 @@
 @import "../../static/sass/mixins.scss";
 
-.label {
+.labelWrapper {
   position: relative;
   display: flex;
+}
+
+.phoneLabel {
+  @include inputStyle();
+  transition: padding var(--transition-duration) ease-in-out;
+}
+
+.phoneLabel.inputFilled {
+  @include inputFilled();
 }
 
 .iconWrapper {
   position: absolute;
   top: 50%;
   left: 16px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
   transform: translateY(-50%);
-}
-
-.input {
-  @include inputStyle();
-}
-
-.input.inputFilled {
-  @include inputFilled();
 }
 
 .fakePlaceholder {

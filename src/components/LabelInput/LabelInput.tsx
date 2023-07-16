@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, ReactNode } from "react";
+import { ChangeEvent, FC, ReactNode, useState } from "react";
 import styles from "./LabelInput.module.scss";
 import cn from "clsx";
 
@@ -6,10 +6,13 @@ type Props = {
   type: string;
   className?: string;
   icon?: ReactNode;
-  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   placeHolder: string;
   name: string;
   value: string;
+  validation: boolean;
+  errorMessage: string;
+  showErrors: boolean;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 };
 
 const LabelInput: FC<Props> = ({
@@ -19,18 +22,36 @@ const LabelInput: FC<Props> = ({
   placeHolder,
   name,
   value,
+  validation,
+  errorMessage,
+  showErrors,
   onChange,
 }) => {
+  const [isFocus, setIsFocus] = useState(false);
+
+  const handleBlurInput = () => {
+    if (!value) {
+      setIsFocus(false);
+    }
+  };
+
   return (
     <label className={cn(styles.label, className)}>
       <span className={styles.iconWrapper}>{icon}</span>
+      <span className={cn(styles.fakePlaceholder, isFocus && styles.focus)}>
+        {placeHolder}
+      </span>
+      {!validation && showErrors && (
+        <span className={styles.errorMessage}>{errorMessage}</span>
+      )}
       <input
-        className={styles.input}
+        className={cn(styles.input, value && styles.inputFilled)}
         type={type}
         onChange={(e) => onChange(e)}
-        placeholder={placeHolder ? placeHolder : ""}
         name={name}
         value={value}
+        onFocus={() => setIsFocus(true)}
+        onBlur={handleBlurInput}
       />
     </label>
   );

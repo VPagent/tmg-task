@@ -1,0 +1,63 @@
+@import "../../static/sass/mixins.scss";
+
+.selectWrapper {
+  @include inputStyle();
+  position: relative;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  transition: border var(--transition-duration) ease-in-out;
+
+  @media screen and (min-width: 1400px) {
+    width: calc((100% - 30px) / 2);
+  }
+}
+
+.selectWrapper.inputFilled {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.outlined {
+  border: 1px solid var(--green-color);
+}
+
+.iconWrapper {
+  position: absolute;
+  top: 50%;
+  left: 16px;
+  transform: translateY(-50%);
+
+  margin-right: 10px;
+}
+
+.fakePlaceholder {
+  @include fakePlaceHolder();
+  margin-right: auto;
+}
+
+.fakePlaceholder.focus {
+  @include placeHolderFocus();
+}
+
+.textWrapper {
+  transform: translateY(0px);
+  transition: transform var(--transition-duration) ease-in-out;
+}
+.textWrapper.textTransform {
+  transform: translateY(6px);
+}
+
+.chevronIcon {
+  margin-left: auto;
+  transform: rotate(0deg);
+  transition: transform var(--transition-duration);
+}
+.iconIsOpen {
+  transform: rotate(180deg);
+}
+
+.errorMessage {
+  @include errorMessage();
+}

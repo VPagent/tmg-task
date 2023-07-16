@@ -1,3 +1,5 @@
+@import "../../static/sass/mixins.scss";
+
 .section {
   width: 100vw;
   height: 100%;
@@ -9,6 +11,16 @@
   background-repeat: no-repeat;
   background-attachment: fixed;
   overflow-y: scroll;
+
+  @media screen and (min-width: 1440px) {
+    background-image: url("../../static/images/bgDesktop.jpg");
+  }
+}
+
+.section.errorSection {
+  @media screen and (min-width: 1440px) {
+    background-image: url("../../static/images/errorBg.jpg");
+  }
 }
 
 .smallWrapperSection {
@@ -23,15 +35,28 @@
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-attachment: fixed;
+  @media screen and (min-width: 1440px) {
+    background-image: none;
+  }
 }
 
 .form {
   display: flex;
   flex-direction: column;
+  @media screen and (min-width: 1440px) {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
 }
 
 .label {
   margin-top: 30px;
+  @media screen and (min-width: 1440px) {
+    width: calc((100% - 30px) / 2);
+    &:nth-of-type(2n + 1) {
+      margin-right: 30px;
+    }
+  }
 }
 
 .checkBoxText {
@@ -52,11 +77,21 @@
   margin-top: 50px;
 }
 
+.loginTextBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: auto;
+}
+
 .loginText {
   composes: checkBoxText;
-  margin-top: 60px;
 }
 
 .loginSpan {
   composes: link;
+}
+
+.phoneLabel {
+  @include inputStyle();
 }

@@ -1,26 +1,50 @@
-import { ChangeEvent, FC, useState } from "react";
-import styles from "./RegistrationPage.module.scss";
-import Container from "../../components/Container/Container";
-import Logo from "../../components/Logo/Logo";
-import LabelInput from "../../components/LabelInput/LabelInput";
-import { ReactComponent as User } from "../../static/icons/user.svg";
-import { ReactComponent as DoubleUser } from "../../static/icons/doubleUser.svg";
-import { ReactComponent as Country } from "../../static/icons/location.svg";
-import { ReactComponent as Phone } from "../../static/icons/phone.svg";
-import { ReactComponent as Password } from "../../static/icons/password.svg";
-import { ReactComponent as ConfirmPassword } from "../../static/icons/confirmPassword.svg";
-import { ReactComponent as Email } from "../../static/icons/email.svg";
+import { ChangeEvent, FC, useEffect, useState } from "react";
+import { errorMessages } from "../../components/LabelInput/errorMessages";
+import cn from "clsx";
+import Container from "../../components/Container";
+import Logo from "../../components/Logo";
+import LabelInput from "../../components/LabelInput";
 import CheckBox from "../../components/CheckBox/CheckBox";
-import SignUpButton from "../../components/SignUpButton/SignUpButton";
+import SignUpButton from "../../components/SignUpButton";
+import CustomSelect from "../../components/CustomSelect";
+import countryData from "./countryData";
+import PhoneInput from "../../components/PhoneInput";
+import UseValidation from "../../helpers/UseValidation";
+import Icon from "../../components/Icon";
+import styles from "./RegistrationPage.module.scss";
 
 const RegistrationPage: FC = () => {
   const [userFirstName, setUserFirstName] = useState("");
   const [userSecondName, setUserSecondName] = useState("");
   const [userCountry, setUserCountry] = useState("");
+  const [countryCode, setCountryCode] = useState("");
   const [userPhone, setUserPhone] = useState("");
   const [userPassword, setUserPassword] = useState("");
   const [userConfirmPassword, setUserConfirmPassword] = useState("");
   const [userEmail, setUserEmail] = useState("");
+  const [userApply, setUserApply] = useState(false);
+  const [registered, setRegistered] = useState(false);
+  const [showErrors, setShowErrors] = useState(false);
+
+  const {
+    nameValidation,
+    phoneValidation,
+    passwordValidation,
+    emailValidation,
+    countryValidation,
+    applyValidation,
+    passwordConfirmValidation,
+  } = UseValidation();
+
+  useEffect(() => {
+    if (userCountry) {
+      const currentCode = countryData.find(
+        (item) => item.name === userCountry
+      )?.phone;
+      //@ts-ignore
+      setCountryCode(`+ ${currentCode}`);
+    }
+  }, [userCountry]);
 
   const handleChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
     switch (e.target.name) {
@@ -28,8 +52,6 @@ const RegistrationPage: FC = () => {
         return setUserFirstName(e.target.value);
       case "secondName":
         return setUserSecondName(e.target.value);
-      case "country":
-        return setUserCountry(e.target.value);
       case "phone":
         return setUserPhone(e.target.value);
       case "password":
@@ -42,11 +64,54 @@ const RegistrationPage: FC = () => {
         return console.log("error in switch");
     }
   };
+
+  const handleSubmit = () => {
+    if (
+      nameValidation(userFirstName) &&
+      phoneValidation(userPhone) &&
+      passwordValidation(userPassword) &&
+      passwordConfirmValidation(userPassword, userConfirmPassword) &&
+      emailValidation(userEmail) &&
+      countryValidation(userCountry) &&
+      applyValidation(userApply)
+    ) {
+      setShowErrors(false);
+      setRegistered(true);
+      return;
+    }
+
+    setShowErrors(true);
+  };
+
+  const handleSetCountry = (name: string) => {
+    setUserCountry(name);
+  };
+
+  const handleApply = (isApply: boolean) => {
+    setUserApply(isApply);
+  };
+
+  const disabledBtn = () => {
+    if (
+      !userFirstName &&
+      !userSecondName &&
+      !userCountry &&
+      userPhone.length <= 1 &&
+      !userPassword &&
+      !userConfirmPassword &&
+      !userEmail &&
+      !userApply
+    ) {
+      return true;
+    }
+    return false;
+  };
+
   return (
-    <section className={styles.section}>
+    <section className={cn(styles.section, showErrors && styles.errorSection)}>
       <section className={styles.smallWrapperSection}>
         <Container>
-          <Logo />
+          <Logo showErrors={showErrors} />
           <form className={styles.form}>
             <LabelInput
               className={styles.label}
@@ -54,8 +119,11 @@ const RegistrationPage: FC = () => {
               name="firstName"
               placeHolder="First Name"
               onChange={handleChangeInput}
-              icon={<User />}
+              icon={<Icon name="user" />}
               value={userFirstName}
+              validation={nameValidation(userFirstName)}
+              errorMessage={errorMessages.firstName}
+              showErrors={showErrors}
             />
             <LabelInput
               className={styles.label}
@@ -63,26 +131,33 @@ const RegistrationPage: FC = () => {
               name="secondName"
               placeHolder="Second Name"
               onChange={handleChangeInput}
-              icon={<DoubleUser />}
+              icon={<Icon name="doubleUser" />}
               value={userSecondName}
+              validation={nameValidation(userSecondName)}
+              errorMessage={errorMessages.secondName}
+              showErrors={showErrors}
             />
-            <LabelInput
+            <CustomSelect
               className={styles.label}
-              type="text"
-              name="country"
               placeHolder="Country"
-              onChange={handleChangeInput}
-              icon={<Country />}
+              onChange={handleSetCountry}
+              icon={<Icon name="location" />}
               value={userCountry}
+              countryData={countryData}
+              validation={countryValidation(userCountry)}
+              errorMessage={errorMessages.country}
+              showErrors={showErrors}
             />
-            <LabelInput
+            <PhoneInput
               className={styles.label}
-              type="number"
-              name="phone"
+              countryCode={countryCode}
               placeHolder="Phone"
               onChange={handleChangeInput}
-              icon={<Phone />}
+              icon={<Icon name="phone" />}
               value={userPhone}
+              validation={phoneValidation(userPhone)}
+              errorMessage={errorMessages.phone}
+              showErrors={showErrors}
             />
             <LabelInput
               className={styles.label}
@@ -90,8 +165,11 @@ const RegistrationPage: FC = () => {
               name="password"
               placeHolder="Password"
               onChange={handleChangeInput}
-              icon={<Password />}
+              icon={<Icon name="password" />}
               value={userPassword}
+              validation={passwordValidation(userPassword)}
+              errorMessage={errorMessages.password}
+              showErrors={showErrors}
             />
             <LabelInput
               className={styles.label}
@@ -99,8 +177,14 @@ const RegistrationPage: FC = () => {
               name="confirmPassword"
               placeHolder="Confirm password"
               onChange={handleChangeInput}
-              icon={<ConfirmPassword />}
+              icon={<Icon name="confirmPassword" />}
               value={userConfirmPassword}
+              validation={passwordConfirmValidation(
+                userPassword,
+                userConfirmPassword
+              )}
+              errorMessage={errorMessages.confirmPassword}
+              showErrors={showErrors}
             />
             <LabelInput
               className={styles.label}
@@ -108,27 +192,40 @@ const RegistrationPage: FC = () => {
               name="email"
               placeHolder="Email"
               onChange={handleChangeInput}
-              icon={<Email />}
+              icon={<Icon name="email" />}
               value={userEmail}
+              validation={emailValidation(userEmail)}
+              errorMessage={errorMessages.email}
+              showErrors={showErrors}
+            />
+            <CheckBox
+              className={styles.label}
+              onChange={handleApply}
+              checked={userApply}
+              showErrors={showErrors}
+              label={
+                <p className={styles.checkBoxText}>
+                  I agree to the{" "}
+                  <a className={styles.link} href="">
+                    Terms & Conditions
+                  </a>
+                </p>
+              }
             />
           </form>
-          <CheckBox
-            className={styles.label}
-            label={
-              <p className={styles.checkBoxText}>
-                I agree to the{" "}
-                <a className={styles.link} href="">
-                  Terms & Conditions
-                </a>
-              </p>
-            }
-          />
 
-          <SignUpButton className={styles.signUpBtn} onChange={() => {}} />
-          <p className={styles.loginText}>
-            If you have an account,{" "}
-            <span className={styles.loginSpan}>Log In</span>
-          </p>
+          <SignUpButton
+            className={styles.signUpBtn}
+            onClick={handleSubmit}
+            registered={registered}
+            disabled={disabledBtn()}
+          />
+          <div className={styles.loginTextBox}>
+            <p className={styles.loginText}>
+              If you have an account,{" "}
+              <span className={styles.loginSpan}>Log In</span>
+            </p>
+          </div>
         </Container>
       </section>
     </section>

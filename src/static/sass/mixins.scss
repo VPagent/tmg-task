@@ -1,0 +1,61 @@
+@mixin inputStyle {
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 16px 20px 16px 50px;
+
+  border: 1px solid var(--input-border-color);
+  border-radius: 4px;
+
+  box-shadow: 0px 4px 15px 0px #0000004d;
+  color: var(--input-border-color);
+
+  font-family: "Rubik", sans-serif;
+  font-weight: 300;
+  font-size: 19px;
+  transition: background-color var(--transition-duration) ease-in-out;
+  &:hover,
+  &:focus {
+    background-color: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--green-color);
+    outline: none;
+  }
+}
+
+@mixin inputFilled {
+  padding-top: 22px;
+  padding-bottom: 10px;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+@mixin fakePlaceHolder {
+  position: absolute;
+  top: 50%;
+  left: 50px;
+  transform: translateY(-50%);
+
+  font-family: "Rubik", sans-serif;
+  font-weight: 300;
+  font-size: 19px;
+  color: var(--input-border-color);
+
+  transition: all var(--transition-duration);
+}
+
+@mixin placeHolderFocus {
+  top: 20%;
+  transform: translateY(0%);
+
+  font-size: 11px;
+  color: var(--green-color);
+}
+
+@mixin errorMessage {
+  position: absolute;
+  bottom: -16px;
+  right: 0px;
+
+  color: var(--red-color);
+  font-family: "Rubik", sans-serif;
+  font-weight: 500;
+  font-size: 10px;
+}

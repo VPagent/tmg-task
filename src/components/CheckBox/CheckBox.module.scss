@@ -18,8 +18,14 @@
   transition: background-color (--transition-duration) ease-in-out;
 }
 
+.bigCircle.error {
+  background-color: var(--red-color);
+  border-color: var(--red-color);
+}
+
 .bigCircle.checked {
   background-color: var(--green-color);
+  border-color: var(--green-color);
 }
 
 .icon {

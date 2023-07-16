@@ -1,12 +1,24 @@
 import { FC } from "react";
+import { useMediaQuery } from "react-responsive";
+import Icon from "../Icon/Icon";
 import styles from "./Logo.module.scss";
 
-const Logo: FC = () => {
+type Props = {
+  showErrors: boolean;
+};
+
+const Logo: FC<Props> = ({ showErrors }) => {
+  const isDesktop = useMediaQuery({
+    query: "(min-width: 1440px)",
+  });
   return (
-    <p className={styles.logo}>
-      <span className={styles.greenPart}>Sign Up</span> and find the best place
-      to rest while traveling
-    </p>
+    <div>
+      {isDesktop && !showErrors && <Icon name="logo" />}
+      <p className={styles.logo}>
+        <span className={styles.greenPart}>Sign Up</span> and find the best
+        place to rest while traveling
+      </p>
+    </div>
   );
 };
 

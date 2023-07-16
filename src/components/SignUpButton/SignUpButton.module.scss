@@ -13,4 +13,22 @@
   color: black;
   font-weight: 500;
   font-size: 19px;
+  cursor: pointer;
+
+  transition: background-color var(--transition-duration);
+
+  &:hover,
+  &:focus {
+    background-color: rgb(68, 183, 145);
+  }
+  @media screen and (min-width: 1440px) {
+    width: 165px;
+  }
+}
+
+.btn:disabled {
+  background-color: transparent;
+  border: 2px solid var(--green-color);
+  color: var(--green-color);
+  cursor: not-allowed;
 }
